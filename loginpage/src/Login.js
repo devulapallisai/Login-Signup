@@ -28,85 +28,25 @@ function Login(props) {
   const [signuperror, setsignuperror] = useState(false);
   // signuperror checks if user there in database or not while signing up
   const [loginerror, setloginerror] = useState(false);
-  const [passworderror,setpassworderror]=useState(false);
+  const [passworderror, setpassworderror] = useState(false);
   // loginerrror checks password matching with database or not if user exists in database while logging in
   const [totalerror, settotalerror] = useState(false);
   // totalerror checks whether user in database or not while logging in
-  let history = useHistory();
+  // let history = useHistory();
   function handleSignupchange(text, username, adminoruser) {
     if (username !== "" && password !== "") {
       // If both username and password are null then fetch /signup api and then insert data into database after hashing password
-      fetch("http://localhost:5000/signup", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user: username,
-          userpass: password,
-          typeuser: selectvalue,
-        }),
-      }).then((response) => {
-        if (response.ok) {
-          // If response is not any internal server error or any 404 kind of
-          response.json().then((data) => {
-            if (!data.error) {
-              // If user already exist in database /signup api sends json data as {"error":true} so if we use !data.error we are checking whether person signing up is already there in database or not for not duplicating database entries
-              props.alert(text, username, adminoruser);
-               // Here we are redirecting to /user or /admin conditionally after signing up 
-              history.push(`/${adminoruser}`);
-            } else {
-              setsignuperror(true);
-            }
-          });
-        } else {
-          // If there is any internal server error or any kind of problem resulting in bad request 404 or 501
-          history.push(`/error`);
-        }
-      });
+      if (password.length < 8) {
+        setpassworderror(true);
+      } else {
+        alert(username);
+      }
     } else {
-      // If any of username and password are null then we return alert to fill form correctly
       alert("Please fill the form correctly");
     }
   }
   function handleLoginchange(text, username, adminoruser) {
-    if (username !== "" && password !== "") {
-      fetch("http://localhost:5000/login", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user: username, userpass: password }),
-      }).then((response) => {
-        if (response.ok) {
-          response.json().then((data) => {
-            if (!data.error) {
-              setloginerror(false);
-              adminoruser = data.typeuser;
-              // I am passing props from Child component to Parents componennt via a function called alert in database which is a function and in App.js I am creating context and passing all username,typeofuser,typeofentry(login/signup) to all child components
-              props.alert(text, username, adminoruser);
-
-              // Here we are redirecting to /user or /admin conditionally after logging in
-              history.push(`/${adminoruser}`);
-            } else {
-              if(password.length<8){
-                setpassworderror(true)
-              }else{
-                setloginerror(true);
-              }
-              // If database return password not matching but username exists /login api returns json data {"error":true} which we use for checking password incorrect or not
-            }
-          });
-        } else {
-          settotalerror(true);
-          // If database return user donot exist in database not matching /login api 
-        }
-      });
-    } else {
-      alert("Please fill the form correctly");
-    }
+    alert("Logged in");
   }
 
   const handleChange = (event) => {
@@ -159,39 +99,24 @@ function Login(props) {
                 If you have signed up please log in now
               </Typography>
             )}
-            {signuperror ? (
-              <TextField
-              error
-              id="outlined-error-helper-text"
-              label="Error"
+            <TextField
+              id="outlined-basic"
+              label="Username"
               type="text"
-              helperText='You have already signed up'
+              helperText="Please enter username"
               variant="outlined"
               onChange={(e) => {
                 setUsername(e.target.value);
               }}
               required
             />
-            ) : (
-              <TextField
-                id="outlined-basic"
-                label="Username"
-                type="text"
-                helperText="Please enter username"
-                variant="outlined"
-                onChange={(e) => {
-                  setUsername(e.target.value);
-                }}
-                required
-              />
-            )}
-            {loginerror ? (
+            {passworderror ? (
               <TextField
                 id="outlined-error-helper-text"
                 error
                 label="Error"
                 type="password"
-                helperText="Please enter correct password"
+                helperText="Password length must be greater than 7"
                 variant="outlined"
                 onChange={(e) => {
                   setPassword(e.target.value);
@@ -274,7 +199,7 @@ function Login(props) {
           </div>
         </div>
       </div>
-      </>
+    </>
   );
 }
 
