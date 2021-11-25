@@ -28,6 +28,7 @@ function Login(props) {
   const [signuperror, setsignuperror] = useState(false);
   // signuperror checks if user there in database or not while signing up
   const [loginerror, setloginerror] = useState(false);
+  const [passworderror,setpassworderror]=useState(false);
   // loginerrror checks password matching with database or not if user exists in database while logging in
   const [totalerror, settotalerror] = useState(false);
   // totalerror checks whether user in database or not while logging in
@@ -90,7 +91,11 @@ function Login(props) {
               // Here we are redirecting to /user or /admin conditionally after logging in
               history.push(`/${adminoruser}`);
             } else {
-              setloginerror(true);
+              if(password.length<8){
+                setpassworderror(true)
+              }else{
+                setloginerror(true);
+              }
               // If database return password not matching but username exists /login api returns json data {"error":true} which we use for checking password incorrect or not
             }
           });
@@ -156,17 +161,17 @@ function Login(props) {
             )}
             {signuperror ? (
               <TextField
-                error
-                id="outlined-error-helper-text"
-                label="Error"
-                type="text"
-                helperText="You have already signed up"
-                variant="outlined"
-                onChange={(e) => {
-                  setUsername(e.target.value);
-                }}
-                required
-              />
+              error
+              id="outlined-error-helper-text"
+              label="Error"
+              type="text"
+              helperText='You have already signed up'
+              variant="outlined"
+              onChange={(e) => {
+                setUsername(e.target.value);
+              }}
+              required
+            />
             ) : (
               <TextField
                 id="outlined-basic"
