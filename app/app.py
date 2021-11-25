@@ -21,8 +21,7 @@ CORS(app, origins=['http://localhost:3000'], support_credentials=True)
 
 def get_db():
     if 'db' not in g:
-        g.db = psycopg.connect(f'host={host} dbname={dbname} user={user} password={password}',
-                               row_factory=psycopg.rows.dict_row)
+        g.db = psycopg.connect('postgres://orkaaiajytgddk:561e0bf6dcb280b6cd1b95c7d26ea0880ea086091e1deda01a97a3cad1761ba3@ec2-3-211-3-53.compute-1.amazonaws.com:5432/dc7vpqinp4sibb', row_factory=psycopg.rows.dict_row,sslmode='require')
 
     return g.db
 
